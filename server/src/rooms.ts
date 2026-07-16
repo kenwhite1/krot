@@ -30,6 +30,8 @@ import { makeRng, randomSeed } from '../../shared/rng'
 import { ROSTER, HUMAN_AVATARS, QUICK_NAMES } from '../../shared/names'
 import type { RoomStateDto, RoomDto, RoomPlayerDto } from '../../shared/types'
 import { recordResult } from './profiles'
+import { reportMatch } from './gg'
+import type { MatchMode } from '../../shared/gg'
 
 interface Seat {
   id: string // человекообразный 'u<число>' и у людей, и у ботов (см. mintSeatId)
@@ -532,13 +534,34 @@ export function leaveRoom(code: string, tgId: number): void {
 function finalize(room: Room): void {
   if (!room.game || room.game.status !== 'finished' || room.scored) return
   room.scored = true
-  const winner = room.game.winner!
+  const g = room.game
+  const winner = g.winner!
+  const humans = room.seats.filter(s => !s.isBot && s.tgId != null)
+  const mode: MatchMode = room.solo ? 'solo' : room.quick ? 'multi' : 'friends'
+  const moleId = g.players.find(p => p.isMole)?.id
   for (const s of room.seats) {
     if (s.isBot || s.tgId == null) continue
-    const me = room.game.players.find(p => p.id === s.id)
+    const me = g.players.find(p => p.id === s.id)
     if (!me) continue
     const won = me.isMole ? winner === 'mole' : winner === 'town'
     recordResult(s.tgId, room.solo ? 'solo' : 'online', won, me.isMole)
+    // «Контрразведка»: сам показал на крота, и стол его за это взял. Голосование
+    // в партии ровно одно (любой вердикт заканчивает игру), так что «с первого
+    // голосования» выполняется по построению — проверяем лишь свой голос.
+    const counterIntel = !me.isMole && g.endReason === 'caught' && g.votes[me.id] === moleId
+    // Рапорт хабу: room.scored выше гарантирует один раз на партию, а ключ
+    // идемпотентности (код+время создания комнаты) — что повтор не доплатит.
+    reportMatch({
+      userId: s.tgId,
+      idempotencyKey: `krot-${room.code}-${room.createdAt}-${s.tgId}`,
+      result: won ? 'win' : 'loss',
+      placement: won ? 1 : 2,
+      players: room.seats.length,
+      humanPlayers: humans.length,
+      mode,
+      opponents: humans.filter(h => h.tgId !== s.tgId).map(h => h.tgId as number),
+      stats: counterIntel ? { signature: true } : undefined,
+    })
   }
 }
 

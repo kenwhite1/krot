@@ -6,6 +6,7 @@ import type { Env } from './env'
 import type { RoomStateDto } from '../../shared/types'
 import { BOT_USERNAME } from './env'
 import { getOrCreateUser, getProfile, topPlayers } from './profiles'
+import { storeLaunchToken } from './gg'
 import {
   createSolo, createRoom, quickMatch, joinRoom, setRoomConfig, startRoom,
   readyInRoom, askInRoom, answerInRoom, callVoteInRoom, voteInRoom, guessInRoom,
@@ -23,6 +24,7 @@ api.post('/auth', async c => {
   if (!v) return c.json({ error: 'invalid_init_data' }, 401)
   const name = [v.user.first_name, v.user.last_name].filter(Boolean).join(' ').slice(0, 40) || 'Игрок'
   getOrCreateUser(v.user.id, name, v.user.username)
+  storeLaunchToken(v.user.id, v.startParam)
   const token = await issueToken(v.user.id)
   return c.json({ token, profile: getProfile(v.user.id), startParam: v.startParam, botUsername: BOT_USERNAME })
 })
