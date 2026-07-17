@@ -1,4 +1,5 @@
 import { useStore } from '../store'
+import { t } from '../i18n'
 
 const RULES = [
   { ic: '🃏', t: 'Все знают место. Кроме одного', b: 'В начале партии все видят общую локацию и свою роль на ней. Один игрок крот: он не знает, где все собрались.' },
@@ -15,19 +16,19 @@ export function Rules() {
     <div className="page rise">
       <div className="page-head">
         <button className="round-btn" onClick={() => go('home')}>‹</button>
-        <h1>Как играть</h1>
+        <h1>{t('Как играть')}</h1>
       </div>
       {RULES.map((r, i) => (
         <div className="rule" key={i}>
           <div className="ic">{r.ic}</div>
           <div>
-            <div className="rt">{r.t}</div>
-            <div className="rb">{r.b}</div>
+            <div className="rt">{t(r.t)}</div>
+            <div className="rb">{t(r.b)}</div>
           </div>
         </div>
       ))}
       <button className="btn block lg" style={{ marginTop: 8 }} onClick={() => { go('home'); useStore.getState().openSetup('solo') }}>
-        Попробовать 🕵️
+        {t('Попробовать 🕵️')}
       </button>
     </div>
   )

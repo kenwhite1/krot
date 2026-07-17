@@ -1,8 +1,10 @@
 // Эмблема «Крота»: дружелюбный крот-сыщик в шляпе с лупой. Свой вектор, без
 // заимствований. Тёплая ламповая палитра в тон семейству.
+import { t } from '../i18n'
+
 export function Logo({ size = 132 }: { size?: number }) {
   return (
-    <svg className="brand-logo" width={size} height={size} viewBox="0 0 132 132" fill="none" role="img" aria-label="Крот">
+    <svg className="brand-logo" width={size} height={size} viewBox="0 0 132 132" fill="none" role="img" aria-label={t('Крот')}>
       <defs>
         <radialGradient id="kl-fur" cx="42%" cy="36%" r="72%">
           <stop offset="0%" stopColor="#7d654c" />

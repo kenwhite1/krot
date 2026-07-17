@@ -1,7 +1,7 @@
 // Тонкая типизированная обёртка над мостом Telegram WebApp; вне Telegram безопасные no-op.
 interface TgWebApp {
   initData: string
-  initDataUnsafe: { user?: { id: number; first_name: string }; start_param?: string }
+  initDataUnsafe: { user?: { id: number; first_name: string; language_code?: string }; start_param?: string }
   colorScheme: 'light' | 'dark'
   ready(): void
   expand(): void

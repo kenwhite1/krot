@@ -1,4 +1,5 @@
 import { useStore } from '../store'
+import { t } from '../i18n'
 
 export function Leaderboard() {
   const go = useStore(s => s.go)
@@ -8,10 +9,10 @@ export function Leaderboard() {
     <div className="page rise">
       <div className="page-head">
         <button className="round-btn" onClick={() => go('home')}>‹</button>
-        <h1>Рейтинг</h1>
+        <h1>{t('Рейтинг')}</h1>
       </div>
       {rows.length === 0 ? (
-        <div className="empty-note">Пока никто не сыграл ни партии.<br />Будь первым за столом 🕵️</div>
+        <div className="empty-note">{t('Пока никто не сыграл ни партии.')}<br />{t('Будь первым за столом 🕵️')}</div>
       ) : (
         <div className="board-list">
           {rows.map((r, i) => (

@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { useStore } from '../store'
 import { Logo } from './Logo'
 import { isSoundOn, setSoundOn } from '../sound'
+import { t, getLang, setLang } from '../i18n'
 
 export function Home() {
   const profile = useStore(s => s.profile)
@@ -14,26 +15,36 @@ export function Home() {
 
   return (
     <div className="home rise">
-      <button
-        className="round-btn"
-        style={{ position: 'absolute', top: 'calc(var(--safe-top) + 14px)', right: 16, zIndex: 5, width: 40, height: 40, fontSize: 17 }}
-        onClick={() => { const on = !sound; setSoundOn(on); setSnd(on) }}
-        aria-label="Звук"
-      >
-        {sound ? '🔊' : '🔇'}
-      </button>
+      <div style={{ position: 'absolute', top: 'calc(var(--safe-top) + 14px)', right: 16, zIndex: 5, display: 'flex', gap: 8 }}>
+        <button
+          className="round-btn"
+          style={{ width: 40, height: 40, fontSize: 13, fontWeight: 800 }}
+          onClick={() => setLang(getLang() === 'ru' ? 'en' : 'ru')}
+          aria-label="Language"
+        >
+          {getLang() === 'ru' ? 'EN' : 'RU'}
+        </button>
+        <button
+          className="round-btn"
+          style={{ width: 40, height: 40, fontSize: 17 }}
+          onClick={() => { const on = !sound; setSoundOn(on); setSnd(on) }}
+          aria-label={t('Звук')}
+        >
+          {sound ? '🔊' : '🔇'}
+        </button>
+      </div>
 
       <div className="brand">
         <Logo />
-        <div className="brand-name">Крот</div>
-        <div className="brand-tag">Один из вас тут чужой. Задавайте вопросы и найдите крота.</div>
+        <div className="brand-name">{t('Крот')}</div>
+        <div className="brand-tag">{t('Один из вас тут чужой. Задавайте вопросы и найдите крота.')}</div>
       </div>
 
       {profile && (
         <div className="stat-strip">
-          <div className="stat-pill"><div className="v">{profile.wins}</div><div className="l">Победы</div></div>
-          <div className="stat-pill"><div className="v">{profile.streak}</div><div className="l">Серия</div></div>
-          <div className="stat-pill"><div className="v">{profile.coins}</div><div className="l">Монеты</div></div>
+          <div className="stat-pill"><div className="v">{profile.wins}</div><div className="l">{t('Победы')}</div></div>
+          <div className="stat-pill"><div className="v">{profile.streak}</div><div className="l">{t('Серия')}</div></div>
+          <div className="stat-pill"><div className="v">{profile.coins}</div><div className="l">{t('Монеты')}</div></div>
         </div>
       )}
 
@@ -43,8 +54,8 @@ export function Home() {
         <button className="tile-btn primary" disabled={busy} onClick={quickMatch}>
           <span className="tile-emoji">🕵️</span>
           <span className="tile-text">
-            <span className="tile-title">Быстрая игра</span>
-            <span className="tile-sub">Случайный стол прямо сейчас</span>
+            <span className="tile-title">{t('Быстрая игра')}</span>
+            <span className="tile-sub">{t('Случайный стол прямо сейчас')}</span>
           </span>
           <span className="tile-chev">›</span>
         </button>
@@ -52,8 +63,8 @@ export function Home() {
         <button className="tile-btn" disabled={busy} onClick={() => openSetup('solo')}>
           <span className="tile-emoji">🎭</span>
           <span className="tile-text">
-            <span className="tile-title">Соло</span>
-            <span className="tile-sub">Партия против ботов, три уровня</span>
+            <span className="tile-title">{t('Соло')}</span>
+            <span className="tile-sub">{t('Партия против ботов, три уровня')}</span>
           </span>
           <span className="tile-chev">›</span>
         </button>
@@ -61,8 +72,8 @@ export function Home() {
         <button className="tile-btn" disabled={busy} onClick={() => openSetup('create')}>
           <span className="tile-emoji">👥</span>
           <span className="tile-text">
-            <span className="tile-title">Игра с друзьями</span>
-            <span className="tile-sub">Собери стол и поделись кодом</span>
+            <span className="tile-title">{t('Игра с друзьями')}</span>
+            <span className="tile-sub">{t('Собери стол и поделись кодом')}</span>
           </span>
           <span className="tile-chev">›</span>
         </button>
@@ -70,8 +81,8 @@ export function Home() {
         <button className="tile-btn" onClick={() => go('lobby')}>
           <span className="tile-emoji">🔑</span>
           <span className="tile-text">
-            <span className="tile-title">Зайти по коду</span>
-            <span className="tile-sub">Введи код из четырёх символов</span>
+            <span className="tile-title">{t('Зайти по коду')}</span>
+            <span className="tile-sub">{t('Введи код из четырёх символов')}</span>
           </span>
           <span className="tile-chev">›</span>
         </button>
@@ -79,11 +90,11 @@ export function Home() {
         <div style={{ display: 'flex', gap: 13 }}>
           <button className="tile-btn" style={{ flex: 1 }} onClick={() => { go('leaderboard'); loadLeaderboard() }}>
             <span className="tile-emoji">🏆</span>
-            <span className="tile-text"><span className="tile-title">Рейтинг</span></span>
+            <span className="tile-text"><span className="tile-title">{t('Рейтинг')}</span></span>
           </button>
           <button className="tile-btn" style={{ flex: 1 }} onClick={() => go('rules')}>
             <span className="tile-emoji">📖</span>
-            <span className="tile-text"><span className="tile-title">Правила</span></span>
+            <span className="tile-text"><span className="tile-title">{t('Правила')}</span></span>
           </button>
         </div>
       </div>

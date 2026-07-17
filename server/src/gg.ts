@@ -1,9 +1,10 @@
 // Интеграция с хабом Game is Game: игра рапортует исход матча, хаб решает
-// награду. Всё fire-and-forget — хаб недоступен, игра живёт дальше.
+// награду. Всё fire-and-forget - хаб недоступен, игра живёт дальше.
 import { db } from './db'
-import { ggReport, decodeLaunchParam, type MatchMode, type MatchOutcome } from '../../shared/gg'
+import { ggReport, ggBalance, decodeLaunchParam, type MatchMode, type MatchOutcome } from '../../shared/gg'
+import type { Profile } from '../../shared/types'
 
-const HUB_URL = (process.env.GG_HUB_URL ?? '').replace(/\/$/, '')
+const HUB_URL = (process.env.GG_HUB_URL ?? 'https://game-is-game-hub-production.up.railway.app').replace(/\/$/, '')
 
 /** Токен запуска приезжает в startapp; храним его до конца матча. */
 export function storeLaunchToken(userId: number, startParam: string | null | undefined): void {
@@ -28,7 +29,7 @@ export interface MatchFacts {
   placement: number | null
   players: number
   humanPlayers: number
-  /** У «Крота» очков за партию нет — поле необязательно. */
+  /** У «Крота» очков за партию нет - поле необязательно. */
   score?: number
   mode: MatchMode
   opponents: number[]
@@ -39,7 +40,7 @@ export interface MatchFacts {
 export function reportMatch(f: MatchFacts): void {
   if (!HUB_URL) return
   const token = launchTokenOf(f.userId)
-  // Игрок пришёл в бота напрямую, а не из хаба — рапортовать не от чьего имени.
+  // Игрок пришёл в бота напрямую, а не из хаба - рапортовать не от чьего имени.
   if (!token) return
   void ggReport(HUB_URL, token, {
     idempotencyKey: f.idempotencyKey,
@@ -52,4 +53,29 @@ export function reportMatch(f: MatchFacts): void {
     opponents: f.opponents,
     stats: f.stats,
   }).catch(() => {})
+}
+
+
+/**
+ * Баланс единой валюты G для игрока, если он запущен из хаба. null - когда игра
+ * standalone (нет токена), хаб не настроен или запрос не удался; тогда вызвавший
+ * оставляет локальный счётчик как офлайн-фолбэк. Не бросает.
+ */
+export async function hubCoins(userId: number): Promise<number | null> {
+  if (!HUB_URL) return null
+  const token = launchTokenOf(userId)
+  if (!token) return null
+  try {
+    const r = await ggBalance(HUB_URL, token)
+    return r.ok ? r.coins : null
+  } catch {
+    return null
+  }
+}
+
+/** Профиль с балансом хаба поверх локального `coins`, если он доступен. */
+export async function withHubCoins(userId: number, profile: Profile | null): Promise<Profile | null> {
+  if (!profile) return profile
+  const coins = await hubCoins(userId)
+  return coins == null ? profile : { ...profile, coins }
 }

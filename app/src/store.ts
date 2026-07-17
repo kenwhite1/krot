@@ -3,6 +3,7 @@ import type { Profile, RoomStateDto, Difficulty, PackId } from '@shared/types'
 import { api, type RoomConfig, type LeaderRow } from './api'
 import { haptic } from './telegram'
 import { playSfx } from './sound'
+import { t } from './i18n'
 
 type Screen = 'home' | 'rules' | 'leaderboard' | 'lobby' | 'game'
 
@@ -76,8 +77,9 @@ const JOIN_ERR: Record<string, string> = {
 
 export const useStore = create<S>((set, get) => {
   function toast(text: string) {
-    set({ toast: text })
-    setTimeout(() => { if (get().toast === text) set({ toast: null }) }, 2200)
+    const msg = t(text)
+    set({ toast: msg })
+    setTimeout(() => { if (get().toast === msg) set({ toast: null }) }, 2200)
   }
 
   function resetSfxTrackers(view: RoomStateDto['view']) {
@@ -237,7 +239,7 @@ export const useStore = create<S>((set, get) => {
       try { enterRoom(await api.roomJoin(code), 'online') }
       catch (e) {
         const err = (e as { data?: { error?: string } })?.data?.error ?? ''
-        set({ busy: false, joinError: JOIN_ERR[err] ?? 'Не удалось войти.' })
+        set({ busy: false, joinError: t(JOIN_ERR[err] ?? 'Не удалось войти.') })
       }
     },
 

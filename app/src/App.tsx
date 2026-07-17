@@ -9,8 +9,10 @@ import { Logo } from './screens/Logo'
 import { CONFETTI } from './brand'
 import { DIFFICULTIES } from '@shared/difficulty'
 import { PACK_INFO } from '@shared/locations'
+import { t, useLang } from './i18n'
 
 export function App() {
+  useLang()
   const ready = useStore(s => s.ready)
   const screen = useStore(s => s.screen)
   const init = useStore(s => s.init)
@@ -23,8 +25,8 @@ export function App() {
         <div className="home" style={{ justifyContent: 'center' }}>
           <div className="brand" style={{ animation: 'pop-in .5s ease both' }}>
             <Logo />
-            <div className="brand-name">Крот</div>
-            <div className="brand-tag">Заводим разговор<span className="dots" /></div>
+            <div className="brand-name">{t('Крот')}</div>
+            <div className="brand-tag">{t('Заводим разговор')}<span className="dots" /></div>
           </div>
         </div>
       </div>
@@ -72,24 +74,24 @@ function SetupSheet() {
     <div className="scrim" onClick={closeSetup}>
       <div className="sheet" onClick={e => e.stopPropagation()}>
         <div className="sheet-grip" />
-        <div className="sheet-title">{kind === 'solo' ? 'Соло против ботов' : 'Игра с друзьями'}</div>
-        <div className="sheet-sub">{kind === 'solo' ? 'Выбери набор и сложность.' : 'Выбери набор и сложность, потом позовёшь друзей.'}</div>
+        <div className="sheet-title">{kind === 'solo' ? t('Соло против ботов') : t('Игра с друзьями')}</div>
+        <div className="sheet-sub">{kind === 'solo' ? t('Выбери набор и сложность.') : t('Выбери набор и сложность, потом позовёшь друзей.')}</div>
 
-        <div className="cfg-label">Набор локаций</div>
+        <div className="cfg-label">{t('Набор локаций')}</div>
         <div className="pack-pills">
           {PACK_INFO.map(p => (
             <button key={p.id} className={`pack-pill${pack === p.id ? ' on' : ''}`} onClick={() => setPack(p.id)}>
               <span className="pe">{p.emoji}</span>
-              <span><span className="pt">{p.name}</span><br /><span className="pb">{p.count} мест</span></span>
+              <span><span className="pt">{t(p.name)}</span><br /><span className="pb">{p.count} {t('мест')}</span></span>
             </button>
           ))}
         </div>
 
-        <div className="cfg-label" style={{ marginTop: 16 }}>Сложность ботов</div>
+        <div className="cfg-label" style={{ marginTop: 16 }}>{t('Сложность ботов')}</div>
         <div className="seg">
           {DIFFICULTIES.map(d => (
             <button key={d.d} className={difficulty === d.d ? 'on' : ''} onClick={() => setDifficulty(d.d)}>
-              <span className="se">{d.emoji}</span>{d.t}<span className="ss">{d.s}</span>
+              <span className="se">{d.emoji}</span>{t(d.t)}<span className="ss">{t(d.s)}</span>
             </button>
           ))}
         </div>
@@ -100,7 +102,7 @@ function SetupSheet() {
           disabled={busy}
           onClick={() => (kind === 'solo' ? startSolo() : createRoom())}
         >
-          {busy ? 'Накрываем стол…' : kind === 'solo' ? 'Начать 🕵️' : 'Создать стол 🕵️'}
+          {busy ? t('Накрываем стол…') : kind === 'solo' ? t('Начать 🕵️') : t('Создать стол 🕵️')}
         </button>
       </div>
     </div>
@@ -134,7 +136,7 @@ function ResultModal() {
 
   const reward = 6 + (won ? 30 + (iAmMole ? 15 : 0) : 0)
   const again = quick ? quickMatch : startSolo
-  const againLabel = quick ? 'Ещё партию 🕵️' : 'Играть снова 🕵️'
+  const againLabel = quick ? t('Ещё партию 🕵️') : t('Играть снова 🕵️')
 
   return (
     <div className="scrim">
@@ -155,39 +157,39 @@ function ResultModal() {
       )}
       <div className="sheet pop result">
         <div className="result-emoji">{won ? (reason.emojiWin) : reason.emojiLose}</div>
-        <h1>{won ? 'Победа' : 'Поражение'}</h1>
+        <h1>{won ? t('Победа') : t('Поражение')}</h1>
         <div className="result-sub">
-          {iAmMole ? reason.mole : reason.town}
+          {t(iAmMole ? reason.mole : reason.town)}
           {' '}
-          {won ? 'Ты на стороне победителей.' : moleWon ? 'В этот раз победил крот.' : 'В этот раз победил город.'}
+          {won ? t('Ты на стороне победителей.') : moleWon ? t('В этот раз победил крот.') : t('В этот раз победил город.')}
         </div>
 
         {moleSeat && view && (
           <div className="result-reveal">
             <div className="rr-emoji">🕵️</div>
             <div style={{ flex: 1 }}>
-              <div className="rr-label">Кротом был</div>
-              <div className="rr-val rr-mole">{moleSeat.isYou ? 'Ты' : moleSeat.name}</div>
+              <div className="rr-label">{t('Кротом был')}</div>
+              <div className="rr-val rr-mole">{moleSeat.isYou ? t('Ты') : t(moleSeat.name)}</div>
             </div>
             <div style={{ textAlign: 'right' }}>
-              <div className="rr-label">Локация</div>
-              <div className="rr-val">{view.you.locationEmoji} {view.you.locationName}</div>
+              <div className="rr-label">{t('Локация')}</div>
+              <div className="rr-val">{view.you.locationEmoji} {t(view.you.locationName)}</div>
             </div>
           </div>
         )}
 
         {won && (
           <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 16 }}>
-            <span className="coin-chip">🪙 +{reward} монет</span>
+            <span className="coin-chip">🪙 +{reward} {t('монет')}</span>
           </div>
         )}
 
         {online ? (
-          <button className="btn block lg" onClick={leaveGame}>На главную</button>
+          <button className="btn block lg" onClick={leaveGame}>{t('На главную')}</button>
         ) : (
           <>
             <button className="btn block lg" onClick={again}>{againLabel}</button>
-            <button className="btn ghost block" style={{ marginTop: 10 }} onClick={leaveGame}>На главную</button>
+            <button className="btn ghost block" style={{ marginTop: 10 }} onClick={leaveGame}>{t('На главную')}</button>
           </>
         )}
       </div>
