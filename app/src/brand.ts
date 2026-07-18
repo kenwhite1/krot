@@ -1,5 +1,5 @@
 // Мелочи бренда «Крота»: цвета конфетти и палитра логотипа.
-export const CONFETTI = ['#f2cf88', '#e0a23a', '#1f9488', '#45b7a9', '#d8453f']
+export const CONFETTI = ['#f8d77e', '#f2a93b', '#7fb069', '#45b7a9', '#e2574c']
 
 export const LOGO = {
   fur: '#6b5642',

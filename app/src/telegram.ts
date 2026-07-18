@@ -26,7 +26,7 @@ declare global {
 export const tg: TgWebApp | null = window.Telegram?.WebApp ?? null
 export const inTelegram = !!tg && tg.initData.length > 0
 
-const CHROME = '#16252b' // тёмная бирюза салона под шапку
+const CHROME = '#1d3d44' // тёплая тёмная бирюза салона под шапку (секционная палитра бренда)
 
 export function initTelegram() {
   if (!tg) return
