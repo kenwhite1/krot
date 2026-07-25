@@ -6,7 +6,7 @@ import type { Env } from './env'
 import type { RoomStateDto } from '../../shared/types'
 import { BOT_USERNAME } from './env'
 import { getOrCreateUser, getProfile, topPlayers } from './profiles'
-import { storeLaunchToken, withHubCoins } from './gg'
+import { storeLaunchToken, withHubCoins, hubFriends, inviteHubFriends } from './gg'
 import {
   createSolo, createRoom, quickMatch, joinRoom, setRoomConfig, startRoom,
   readyInRoom, askInRoom, answerInRoom, callVoteInRoom, voteInRoom, guessInRoom,
@@ -150,4 +150,18 @@ api.post('/room/:code/guess', async c => {
 api.post('/room/:code/leave', c => {
   leaveRoom(c.req.param('code'), c.get('uid'))
   return c.json({ ok: true })
+})
+
+// Друзья из хаба: список для панели «позвать» и сама рассылка приглашений.
+api.get('/friends/hub', async c => {
+  const friends = await hubFriends(c.get('uid')).catch(() => [])
+  return c.json({ friends })
+})
+api.post('/friends/invite', async c => {
+  type InviteBody = { friendIds?: number[]; note?: string }
+  const body = await c.req.json<InviteBody>().catch((): InviteBody => ({}))
+  const ids = Array.isArray(body.friendIds) ? body.friendIds.slice(0, 20) : []
+  if (ids.length === 0) return c.json({ error: 'bad_request' }, 400)
+  const sent = await inviteHubFriends(c.get('uid'), ids, body.note).catch(() => 0)
+  return c.json({ sent })
 })

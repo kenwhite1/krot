@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { useStore } from '../store'
+import { HubInvite } from './HubInvite'
 import { shareLink, haptic } from '../telegram'
 import { DIFFICULTIES } from '@shared/difficulty'
 import { PACK_INFO } from '@shared/locations'
@@ -68,6 +69,7 @@ export function Lobby() {
         <div className="code-big">{r.code}</div>
         <button className="btn accent block" style={{ marginTop: 8 }} onClick={share}>{t('Позвать друзей ↗')}</button>
       </div>
+      <HubInvite />
 
       <div className="seatlist">
         {r.players.map(p => (
