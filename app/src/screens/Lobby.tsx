@@ -5,6 +5,7 @@ import { shareLink, haptic } from '../telegram'
 import { DIFFICULTIES } from '@shared/difficulty'
 import { PACK_INFO } from '@shared/locations'
 import { t } from '../i18n'
+import { GGAvatar } from '../gg/GGAvatar'
 
 export function Lobby() {
   const room = useStore(s => s.room)
@@ -74,7 +75,7 @@ export function Lobby() {
       <div className="seatlist">
         {r.players.map(p => (
           <div className="seat" key={p.id}>
-            <div className="av">{p.avatar}</div>
+            <div className="av"><GGAvatar id={p.id} fallback={<>{p.avatar}</>} /></div>
             <div className="nm">{t(p.name)}</div>
             {p.isHost ? <div className="tag host">{t('ХОЗЯИН')}</div> : p.isBot ? <div className="tag bot">{t('БОТ')}</div> : <div className="tag wait">{t('ГОТОВ')}</div>}
           </div>
