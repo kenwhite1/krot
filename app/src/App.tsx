@@ -110,11 +110,11 @@ function SetupSheet() {
 }
 
 const REASON: Record<string, { emojiWin: string; emojiLose: string; town: string; mole: string }> = {
-  caught: { emojiWin: '🎉', emojiLose: '🫥', town: 'Крота вычислили и вывели на чистую воду.', mole: 'Тебя раскусили. Стол оказался зорче.' },
-  mislynch: { emojiWin: '🃏', emojiLose: '🫥', town: 'Стол выгнал своего, а крот тихо остался.', mole: 'Город выгнал невиновного. Крот ускользнул.' },
-  escaped: { emojiWin: '🌫️', emojiLose: '🤐', town: 'Стол так и не договорился, крот ушёл в тень.', mole: 'Никто не сошёлся во мнении, и ты улизнул.' },
-  guessed: { emojiWin: '🎯', emojiLose: '🎯', town: 'Крот вслушался и точно назвал локацию.', mole: 'Ты вычислил место и забрал победу!' },
-  wrongGuess: { emojiWin: '🧭', emojiLose: '🧭', town: 'Крот промахнулся с локацией и выдал себя.', mole: 'Локация оказалась не та. Обидно.' },
+  caught: { emojiWin: '🎉', emojiLose: '🫥', town: "Крота вычислили и вывели на чистую воду.", mole: "Тебя раскусили. Стол оказался зорче." },
+  mislynch: { emojiWin: '🃏', emojiLose: '🫥', town: "Стол выгнал своего, а крот тихо остался.", mole: "Город выгнал невиновного. Крот ускользнул." },
+  escaped: { emojiWin: '🌫️', emojiLose: '🤐', town: "Стол так и не договорился, крот ушёл в тень.", mole: "Никто не сошёлся во мнении, и ты улизнул." },
+  guessed: { emojiWin: '🎯', emojiLose: '🎯', town: "Крот вслушался и точно назвал локацию.", mole: "Ты вычислил место и забрал победу!" },
+  wrongGuess: { emojiWin: '🧭', emojiLose: '🧭', town: "Крот промахнулся с локацией и выдал себя.", mole: "Локация оказалась не та. Обидно." },
 }
 
 function ResultModal() {
