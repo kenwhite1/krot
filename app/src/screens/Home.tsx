@@ -15,15 +15,7 @@ export function Home() {
 
   return (
     <div className="home rise">
-      <div style={{ position: 'absolute', top: 'calc(var(--safe-top) + 14px)', right: 16, zIndex: 5, display: 'flex', gap: 8 }}>
-        <button
-          className="round-btn"
-          style={{ width: 40, height: 40, fontSize: 13, fontWeight: 800 }}
-          onClick={() => setLang(getLang() === 'ru' ? 'en' : 'ru')}
-          aria-label="Language"
-        >
-          {getLang() === 'ru' ? 'EN' : 'RU'}
-        </button>
+      <div data-gg-pregame>
         <button
           className="round-btn"
           style={{ width: 40, height: 40, fontSize: 17 }}
