@@ -502,3 +502,6 @@ h2 { font-size: 19px; }
 .hub-invite-btn:active:not(:disabled), .hub-invite-all:active { transform: translateY(2px); box-shadow: none; }
 .hub-invite-all { width: 100%; margin-top: 2px; }
 @media (prefers-reduced-motion: reduce) { .hub-invite-open, .hub-invite-btn, .hub-invite-all { transition: none; } }
+
+/* Место под образ из хаба (GGAvatar) размером с эмодзи-лицо. */
+.pc-av { display: inline-grid; place-items: center; width: 1.4em; height: 1.4em; vertical-align: middle; flex-shrink: 0; }

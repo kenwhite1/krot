@@ -6,6 +6,7 @@ import { QUESTIONS, humanAnswerOptions, type AnswerOption } from '@shared/interr
 import { makeRng } from '@shared/rng'
 import type { GameView } from '@shared/types'
 import { t } from '../i18n'
+import { GGAvatar } from '../gg/GGAvatar'
 
 type Sheet = 'question' | 'guess' | 'locations' | null
 
@@ -103,7 +104,7 @@ function PlayersRow({ view }: { view: GameView }) {
         <div key={p.id} className={`pl${p.isAsker ? ' asker' : ''}${p.isYou ? ' you-pl' : ''}`}>
           {p.isAsker && <span className="pl-asker-dot" />}
           {view.phase === 'vote' && p.votesOn > 0 && <span className="pl-votes">{p.votesOn}</span>}
-          <div className="pl-av">{p.avatar}</div>
+          <div className="pl-av"><GGAvatar id={p.id} fallback={<>{p.avatar}</>} /></div>
           <div className="pl-name">{t(p.name)}</div>
           {p.isYou && <div className="pl-you-tag">{t('ты')}</div>}
         </div>
@@ -137,14 +138,14 @@ function QA({ e, view }: { e: GameView['exchanges'][number]; view: GameView }) {
   return (
     <div className="qa">
       <div className="qa-q">
-        <div className="qa-av">{askAv}</div>
+        <div className="qa-av"><GGAvatar id={e.askerId} fallback={<>{askAv}</>} /></div>
         <div className="bubble q">
           <span className="who">{t(e.askerName)} → {t(e.targetName)}</span>
           {t(e.question)}
         </div>
       </div>
       <div className="qa-a">
-        <div className="qa-av">{ansAv}</div>
+        <div className="qa-av"><GGAvatar id={e.targetId} fallback={<>{ansAv}</>} /></div>
         <div className="bubble a">
           <span className="who">{t(e.targetName)}</span>
           {t(e.answer)}
@@ -179,7 +180,7 @@ function ActionArea({
           <div className="votegrid">
             {candidates.map(p => (
               <button key={p.id} className={`vote-row${view.yourVote === p.id ? ' on' : ''}`} disabled={busy} onClick={() => vote(p.id)}>
-                <div className="va">{p.avatar}</div>
+                <div className="va"><GGAvatar id={p.id} fallback={<>{p.avatar}</>} /></div>
                 <div className="vn">{t(p.name)}</div>
                 {p.votesOn > 0 && <div className="vc">{p.votesOn} 🗳</div>}
               </button>
@@ -211,7 +212,7 @@ function ActionArea({
             <div className="pickrow">
               {view.players.filter(p => !p.isYou).map(p => (
                 <button key={p.id} className="pick-chip" disabled={busy} onClick={() => onPickTarget(p.id)}>
-                  <span className="pc-av">{p.avatar}</span>
+                  <span className="pc-av"><GGAvatar id={p.id} fallback={<>{p.avatar}</>} /></span>
                   <span className="pc-nm">{t(p.name)}</span>
                 </button>
               ))}
