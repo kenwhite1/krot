@@ -1,12 +1,18 @@
+import { initGameVolume, getGameVolume, setGameVolume, subscribeGameVolume, gameAudioOutput, installGameVolume } from './gameVolume'
 // Крошечные синтезированные звуки через WebAudio: без файлов, работает офлайн.
 // Создаётся лениво при первом проигрывании (webview Telegram требует жеста).
 // Мягкий салонный тон: лёгкий «дзинь» вопроса, тёплый отклик ответа, глухой стук
 // обвинения и переливы победы.
 let ctx: AudioContext | null = null
 let muted = localStorage.getItem('krotMuted') === '1'
+initGameVolume(muted ? 0 : 1)
+muted = getGameVolume() === 0
+subscribeGameVolume(v => { muted = v === 0 })
+installGameVolume()
 
 export function isSoundOn(): boolean { return !muted }
 export function setSoundOn(on: boolean): void {
+  setGameVolume(on ? getGameVolume() || 1 : 0)
   muted = !on
   localStorage.setItem('krotMuted', muted ? '1' : '0')
 }
@@ -29,7 +35,7 @@ function blip(c: AudioContext, freq: number, at: number, dur: number, type: Osci
   g.gain.setValueAtTime(0.0001, at)
   g.gain.exponentialRampToValueAtTime(peak, at + 0.01)
   g.gain.exponentialRampToValueAtTime(0.0001, at + dur)
-  o.connect(g); g.connect(c.destination)
+  o.connect(g); g.connect(gameAudioOutput(c))
   o.start(at); o.stop(at + dur + 0.02)
 }
 
@@ -41,7 +47,7 @@ function knock(c: AudioContext, at: number, freq = 320, dur = 0.12, peak = 0.12)
   o.frequency.exponentialRampToValueAtTime(freq * 0.5, at + dur)
   g.gain.setValueAtTime(peak, at)
   g.gain.exponentialRampToValueAtTime(0.0001, at + dur)
-  o.connect(g); g.connect(c.destination)
+  o.connect(g); g.connect(gameAudioOutput(c))
   o.start(at); o.stop(at + dur + 0.02)
 }
 

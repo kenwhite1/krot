@@ -1,3 +1,4 @@
+import { GameVolumeButton } from '../GameVolumeButton'
 import { useState } from 'react'
 import { useStore } from '../store'
 import { Logo } from './Logo'
@@ -16,14 +17,7 @@ export function Home() {
   return (
     <div className="home rise">
       <div data-gg-pregame>
-        <button
-          className="round-btn"
-          style={{ width: 40, height: 40, fontSize: 17 }}
-          onClick={() => { const on = !sound; setSoundOn(on); setSnd(on) }}
-          aria-label={t('Звук')}
-        >
-          {sound ? '🔊' : '🔇'}
-        </button>
+        <GameVolumeButton className="round-btn" />
       </div>
 
       <div className="brand">
