@@ -75,6 +75,21 @@ const JOIN_ERR: Record<string, string> = {
   bad_code: 'Код из четырёх символов.',
 }
 
+/** Код лобби из приглашения друга: хаб кладёт его в токен запуска (claim
+ *  `room`), когда игрок принимает приглашение в хабе. Иначе null. */
+function inviteRoomOf(startParam: string | null | undefined): string | null {
+  if (!startParam) return null
+  try {
+    const token = atob(startParam.replace(/-/g, '+').replace(/_/g, '/'))
+    const parts = token.split('.')
+    if (parts.length !== 3) return null
+    const room = JSON.parse(atob(parts[1].replace(/-/g, '+').replace(/_/g, '/'))).room
+    return typeof room === 'string' && /^[A-Z0-9]{4}$/i.test(room) ? room.toUpperCase() : null
+  } catch {
+    return null
+  }
+}
+
 export const useStore = create<S>((set, get) => {
   function toast(text: string) {
     const msg = t(text)
@@ -193,6 +208,10 @@ export const useStore = create<S>((set, get) => {
         if (startParam?.startsWith('room_')) {
           const code = startParam.slice(5).toUpperCase()
           if (/^[A-Z0-9]{4}$/.test(code)) await get().joinRoom(code)
+        } else {
+          // Принял приглашение друга в хабе: код его лобби едет в токене запуска.
+          const invited = inviteRoomOf(startParam)
+          if (invited) await get().joinRoom(invited)
         }
       } catch {
         set({ ready: true })

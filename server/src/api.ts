@@ -158,10 +158,12 @@ api.get('/friends/hub', async c => {
   return c.json({ friends })
 })
 api.post('/friends/invite', async c => {
-  type InviteBody = { friendIds?: number[]; note?: string }
+  type InviteBody = { friendIds?: number[]; note?: string; room?: string }
   const body = await c.req.json<InviteBody>().catch((): InviteBody => ({}))
   const ids = Array.isArray(body.friendIds) ? body.friendIds.slice(0, 20) : []
   if (ids.length === 0) return c.json({ error: 'bad_request' }, 400)
-  const sent = await inviteHubFriends(c.get('uid'), ids, body.note).catch(() => 0)
+  // Код лобби: хаб положит его в ссылку друга, и тот сразу войдёт в комнату.
+  const room = typeof body.room === 'string' && /^[A-Za-z0-9]{3,16}$/.test(body.room) ? body.room : undefined
+  const sent = await inviteHubFriends(c.get('uid'), ids, body.note, room).catch(() => 0)
   return c.json({ sent })
 })

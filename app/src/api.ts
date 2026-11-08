@@ -23,7 +23,7 @@ export interface RoomConfig { difficulty?: Difficulty; pack?: PackId; addBots?: 
 
 export const api = {
   hubFriends: () => req<{ friends: { id: number; name: string; color: string; face: string }[] }>('/friends/hub'),
-  inviteFriends: (friendIds: number[], note?: string) => req<{ sent: number }>('/friends/invite', { friendIds, note }),
+  inviteFriends: (friendIds: number[], note?: string, room?: string) => req<{ sent: number }>('/friends/invite', { friendIds, note, room }),
   async auth(): Promise<{ profile: Profile; startParam: string | null; botUsername: string }> {
     const r = await req<{ token: string; profile: Profile; startParam: string | null; botUsername: string }>('/auth', {
       initData: getInitData(),

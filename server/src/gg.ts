@@ -111,9 +111,9 @@ export async function hubFriends(userId: number): Promise<HubPerson[]> {
 }
 
 /** Позвать друзей из хаба в эту игру. Возвращает, скольким сообщение ушло. */
-export async function inviteHubFriends(userId: number, friendIds: number[], note?: string): Promise<number> {
+export async function inviteHubFriends(userId: number, friendIds: number[], note?: string, room?: string): Promise<number> {
   const token = launchTokenOf(userId)
   if (!token || friendIds.length === 0) return 0
-  const r = (await hubCall('/api/sdk/invite', token, { friendIds, note })) as { ok: boolean; sent: number } | null
+  const r = (await hubCall('/api/sdk/invite', token, { friendIds, note, ...(room ? { room } : {}) })) as { ok: boolean; sent: number } | null
   return r?.ok ? r.sent : 0
 }

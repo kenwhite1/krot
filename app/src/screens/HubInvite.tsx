@@ -4,12 +4,15 @@
 // панель не показывается вовсе.
 import { useEffect, useState } from 'react'
 import { api } from '../api'
+import { useStore } from '../store'
 import { t } from '../i18n'
 import { GGAvatar } from '../gg/GGAvatar'
 
 interface HubFriend { id: number; name: string; color: string; face: string }
 
-export function HubInvite({ note }: { note?: string }) {
+export function HubInvite({ note, room }: { note?: string; room?: string | null }) {
+  // Код лобби, где сидит игрок: друг, приняв приглашение, попадёт прямо сюда.
+  const lobby = useStore(s => s.room?.room?.code ?? null)
   const [friends, setFriends] = useState<HubFriend[]>([])
   const [sent, setSent] = useState<number[]>([])
   const [open, setOpen] = useState(false)
@@ -22,7 +25,7 @@ export function HubInvite({ note }: { note?: string }) {
 
   const invite = async (ids: number[]) => {
     setSent(prev => [...prev, ...ids])
-    await api.inviteFriends(ids, note).catch(() => { /* кнопка уже показала «позвали» */ })
+    await api.inviteFriends(ids, note, room ?? lobby ?? undefined).catch(() => { /* кнопка уже показала «позвали» */ })
   }
   const left = friends.filter(f => !sent.includes(f.id))
 
